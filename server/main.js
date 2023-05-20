@@ -3,14 +3,9 @@ const fastify = require('fastify')({
     logger: true // Эта штука нужна, чтобы в терминале отображались логи запросов
 })
 
-var pdfmake = require('pdfmake');
-
-const TelegramBot = require('node-telegram-bot-api');
 const command = require('nodemon/lib/config/command');
 const token = '5877622379:AAHHwz7lruFtcfcnQ9MopdRh6Sb1AQ7u-E0'
-const bot = new TelegramBot(token, {polling: true})
 const chatId = -1001887927346
-const pdfMakePrinter = require('pdfmake/src/printer')
 // Блок кода, который нужен для исправления ошибки с CORS
 // fastify.register(require('@fastify/cors'), (instance) => {
 //     return (req, callback) => {
@@ -36,20 +31,7 @@ const posts = [{
 }]
 
 
-bot.onText(/\/test/, async(msg)=>{
-    let str = "1"
-    for (const item of posts ){
-        str+=`<code>Название</code>${item.name}\nДата ${item.data}\n---------------------\n`    
-    }
-    await bot.sendMessage(chatId,str,{parse_mode:'HTML'})  
-})
-fastify.post('/post/add',async function(request,reply){
-    const object = request.body
-    object.createdAt = new Date()
-    console.log(object);
-    posts.push(object)
-    await bot.sendMessage(chatId,JSON.stringify("Хай Бибис"))
-})
+
 
 // // Создание маршрута для get запроса
 // fastify.post('/folders', function (request, reply) {
@@ -75,18 +57,7 @@ fastify.post('/post/add',async function(request,reply){
 // })
 // Импортируем библиотеку fastify для развертывания веб-сервера
 
-const Pool = require('pg-pool')
-const pool = new Pool({
-    database: 'postgres',
-    user: 'postgres',
-    password: '123456789',
-    port: 5432,
-    ssl: false,
-    max: 20, // set pool max size to 20
-    idleTimeoutMillis: 1000, // close idle clients after 1 second
-    connectionTimeoutMillis: 1000, // return an error after 1 second if connection could not be established
-    maxUses: 7500,
-})
+
 pool.on('error', (error, client) => {
     console.error(error)
     process.exit(-1)
@@ -125,25 +96,7 @@ var fonts = {
   };
 // Получение всех папок
 fastify.post('/folder/show',async function(request,reply){
-    let data = {
-        message:'error',
-        statusCode:400
-    }
-    const urlName = '/folder/show'
-    const client = await pool.connect()
-    try {
-        const folders = await client.query(`SELECT "folderId", "folderName", "folderColor"
-                                            FROM folders`);
-        data.message = folders.rows
-        data.statusCode = 200
-    }
-    catch (e) {
-        console.log(e);
-    }
-    finally {
-        client.release()
-        console.log(urlName, 'client release()');
-    }
+    
     reply.send(data)
 })
 
@@ -208,59 +161,7 @@ fastify.post('/folder/update',async function(request,reply){
     }
     reply.send(data)
 })
-async function docFileFromStream(document) {
-    const chunks = [];
-    let result = null;
-    return new Promise(function (resolve, reject) {
-        try {
-            document.on('data', function (chunk) {
-                chunks.push(chunk);
-            });
-            document.on('end', async function () {
-                result = Buffer.concat(chunks);
-                console.log('end');
-                resolve(result);
-                
-            });
-            document.on('error', reject);
-            document.end();
-        } catch (error) {
-            console.log('docFileFromStream ERROR');
-            console.log(error);
-            reject(null);
-        }
-    });
-}
 
-fastify.post('/pdf', async(request,reply)=>{
-    try{
-        //1 запрос в базу на получение всех задач
-        const create = '/pdf'
-        const client = await pool.connect()
-
-        
-
-
-        //2 Сформировать строку вида item1\item2\item3
-        
-        //3 Передать сформированную строку в content 
-        // const printer = new pdfMakePrinter(fonts)
-        // const docFile = printer.createPdfKitDocument({
-        //     content:[
-        //         'First paragraph',
-        //         'Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines'
-        //     ]
-        // })
-        
-        // const doc = await docFileFromStream(docFile)
-        // reply.header('Content-Type','application/pdf')
-        // reply.send(doc)
-    }
-    
-    catch (e) {
-        console.log(e);
-    }
-});
 
 // Запускаем сервер на порту 3000
 fastify.listen({ port: 3000 }, function (err, address) {
