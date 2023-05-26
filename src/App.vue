@@ -3,7 +3,7 @@
     <div>Отправка файла</div>
   <form enctype="multipart/form-data" method="post" >
    <p ><input type="file" name="f" >
-   <input type="submit" value="Отправить" class="file"></p></form> 
+   <input type="submit" value="Отправить" ></p></form> 
   </div>
 </template>
 
@@ -27,7 +27,5 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.file{
-  background-color: blueviolet;
-}
+
 </style>
