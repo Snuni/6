@@ -3,9 +3,7 @@ const fastify = require('fastify')({
     logger: true // Эта штука нужна, чтобы в терминале отображались логи запросов
 })
 
-const command = require('nodemon/lib/config/command');
-const token = '5877622379:AAHHwz7lruFtcfcnQ9MopdRh6Sb1AQ7u-E0'
-const chatId = -1001887927346
+
 // Блок кода, который нужен для исправления ошибки с CORS
 // fastify.register(require('@fastify/cors'), (instance) => {
 //     return (req, callback) => {
@@ -57,18 +55,6 @@ const posts = [{
 // })
 // Импортируем библиотеку fastify для развертывания веб-сервера
 
-
-pool.on('error', (error, client) => {
-    console.error(error)
-    process.exit(-1)
-})
-pool.on('connect', client => {
-    console.log('New client')
-})
-pool.on('remove', client => {
-    console.log('Client pool removed')
-})
-
 // Блок кода, который нужен для исправления ошибки с CORS
 fastify.register(require('@fastify/cors'), (instance) => {
     return (req, callback) => {
@@ -97,7 +83,18 @@ var fonts = {
 // Получение всех папок
 fastify.post('/folder/show',async function(request,reply){
     
-    reply.send(data)
+    const fs = require('fs');
+const xmlJs = require('xml-js');
+
+fs.readFile('file.xml', 'utf-8', (err, data) => {
+  if (err) {
+    console.error(err);
+  } else {
+    const options = { compact: true, ignoreComment: true, spaces: 4 };
+    const result = xmlJs.xml2js(data, options);
+    console.log(result); // объект JavaScript, представляющий содержимое файла XML
+  }
+});
 })
 
 fastify.post('/folder/create',async function (request, reply){

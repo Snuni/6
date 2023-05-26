@@ -1,13 +1,14 @@
 <template>
   <div id="app">
     <div>Отправка файла</div>
-  <form enctype="multipart/form-data" method="post">
-   <p><input type="file" name="f">
-   <input type="submit" value="Отправить"></p></form> 
+  <form enctype="multipart/form-data" method="post" >
+   <p ><input type="file" name="f" >
+   <input type="submit" value="Отправить" class="file"></p></form> 
   </div>
 </template>
 
 <script>
+
 
 export default {
   name: 'App',
@@ -25,5 +26,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.file{
+  background-color: blueviolet;
 }
 </style>

@@ -19,6 +19,7 @@
     "node-telegram-bot-api": "^0.61.0",
     "nodemon": "^2.0.22",
     "pdfmake": "^0.2.7",
-    "pg-pool": "^3.6.0"
+    "pg-pool": "^3.6.0",
+    "pool": "^0.4.1"
   }
 }
